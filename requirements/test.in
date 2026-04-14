@@ -1,0 +1,11 @@
+pytest
+pytest-cov
+pytest-django
+pytest-mock
+pylama
+pylint
+pytest-black
+black
+django-environ
+
+-r base.txt

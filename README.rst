@@ -1,3 +1,8 @@
+Edits made by Heinrich:
+- Add new migrations added by upgrading to Django 6
+
+!! Django < 6 not supported anymore !!
+
 django-pyAS2
 ============
 
