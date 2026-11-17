@@ -1,5 +1,6 @@
 Edits made by Heinrich:
 - Add new migrations added by upgrading to Django 6
+- Merge 93e7255 from Forworddash
 
 !! Django < 6 not supported anymore !!
 

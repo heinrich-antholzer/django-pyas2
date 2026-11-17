@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("pyas2", "0003_auto_20221208_1310"),
+        ("pyas2", "0004_alter_mdn_id_alter_message_id_and_more"),
     ]
 
     operations = [
