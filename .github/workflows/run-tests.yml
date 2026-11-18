@@ -24,7 +24,8 @@ jobs:
           pip install -e ".[tests]"
       - name: Run Tests
         run: |
-          pytest --cov-report term --cov-config .coveragerc --cov=pyas2 --black --pylama pyas2
+          ruff check pyas2
+          pytest --cov-report term --cov=pyas2
       - name: Generate CodeCov Report
         run: |
           pip install codecov
