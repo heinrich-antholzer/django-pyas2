@@ -6,8 +6,6 @@ on:
   pull_request:
     branches:
       - "master"
-env:
-  OPENSSL_ENABLE_SHA1_SIGNATURES: 1
 jobs:
   build:
     runs-on: ubuntu-latest
