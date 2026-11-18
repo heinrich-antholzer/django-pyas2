@@ -25,7 +25,7 @@ django-pyAS2
 
 ``django-pyas2`` is an AS2 server/client written in python and built on the django framework.
 The application supports AS2 version 1.2 as defined in the `RFC 4130`_. Our goal is to provide a native
-python library for implementing the AS2 protocol. It supports Python 3.6+
+python library for implementing the AS2 protocol. It supports Python 3.14+ and Django 6.
 
 ``django-pyas2`` includes a set of django-admin commands that can be used to send files as
 a client, send asynchronous MDNs and so on. It also has a web based front end interface for
@@ -96,12 +96,11 @@ Contribute
 Running Tests
 ~~~~~~~~~~~~~
 
-Install `django-environ` and `pytest` into your environment to support the
-example.settings module and test framework.
+Install the test dependencies with ``pip install -e ".[tests]"``.
 
-To run ``django-pyas2's`` test suite:
+To run Ruff and ``django-pyas2's`` test suite:
 
-``django-admin.py test pyas2 --settings=example.settings --pythonpath=.``
+``make test``
 
 License
 ~~~~~~~
