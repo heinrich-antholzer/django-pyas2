@@ -33,6 +33,7 @@ tests = [
     "pytest",
     "pytest-django",
     "pytest-cov",
+    "pytest-mock",
     "coverage",
     "django-environ",
     "ruff",
