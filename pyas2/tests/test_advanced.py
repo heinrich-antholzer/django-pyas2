@@ -54,9 +54,9 @@ class AdvancedTestCases(TestCase):
             target_url="http://localhost:8080/pyas2/as2receive",
             compress=False,
             mdn=False,
-            signature_cert=self.client_crt,
-            encryption_cert=self.client_crt,
         )
+        self.partner.signature_certs.add(self.client_crt)
+        self.partner.encryption_certs.add(self.client_crt)
 
         # Setup the client organization and partner
         self.organization = Organization.objects.create(
@@ -96,18 +96,19 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
+            signature="sha256",
             http_auth=True,
             http_auth_user="admin",
             http_auth_pass="password",
-            signature_cert=self.server_crt,
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
             cmd_send="touch %s/$messageid.sent" % TEST_DIR,
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "S")
 
@@ -125,15 +126,16 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="ASYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
             cmd_send="touch %s/$messageid.sent" % TEST_DIR,
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Send the async mdn to the sender
@@ -164,14 +166,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "S")
 
@@ -197,14 +200,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "S")
 
@@ -226,14 +230,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "S")
 
@@ -250,14 +255,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
 
         # Send the message once
         as2message = As2Message(
@@ -299,14 +305,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server2",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "E")
 
@@ -326,14 +333,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "E")
 
@@ -346,7 +354,7 @@ class AdvancedTestCases(TestCase):
 
     def test_insufficient_security_error(self):
         self.partner.encryption = "tripledes_192_cbc"
-        self.partner.signature = "sha1"
+        self.partner.signature = "sha256"
         self.partner.save()
 
         # Create the client partner and send the command
@@ -354,13 +362,14 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature_cert=self.server_crt,
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
         self.assertEqual(in_message.status, "E")
 
@@ -392,11 +401,12 @@ class AdvancedTestCases(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             compress=True,
-            signature_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner, smudge=True)
         self.assertEqual(in_message.status, "E")
 
@@ -414,12 +424,13 @@ class AdvancedTestCases(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.client_crt,
-            signature_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.encryption_certs.add(self.client_crt)
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner, smudge=False)
         self.assertEqual(in_message.status, "E")
 
@@ -436,12 +447,13 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner, smudge=True)
         self.assertEqual(in_message.status, "E")
 
@@ -460,14 +472,15 @@ class AdvancedTestCases(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="ASYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         out_message = self.build_and_send(partner)
 
         # Create MDN object without message_id

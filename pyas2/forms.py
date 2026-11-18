@@ -34,22 +34,14 @@ class PartnerForm(forms.ModelForm):
                     )
                 )
 
-        # certificates can be set either directly or in the rollover list
-        has_encryption_cert = cleaned_data.get("encryption_cert") or cleaned_data.get(
-            "encryption_cert_rollover"
-        )
-        has_signature_cert = cleaned_data.get("signature_cert") or cleaned_data.get(
-            "signature_cert_rollover"
-        )
-
         # if encryption is set and no cert is mentioned set error
-        if cleaned_data.get("encryption") and not has_encryption_cert:
+        if cleaned_data.get("encryption") and not cleaned_data.get("encryption_certs"):
             raise forms.ValidationError(
                 _("Encryption Key is mandatory when message encryption is set")
             )
 
         # if signature is set and no cert is mentioned set error
-        if cleaned_data.get("signature") and not has_signature_cert:
+        if cleaned_data.get("signature") and not cleaned_data.get("signature_certs"):
             raise forms.ValidationError(
                 _("Signature Key is required when message signature is set")
             )
@@ -59,7 +51,7 @@ class PartnerForm(forms.ModelForm):
             raise forms.ValidationError(_("MDN Mode needs to be specified"))
 
         # if the mdn signature is set then the signature cert must be set
-        if cleaned_data.get("mdn_sign") and not has_signature_cert:
+        if cleaned_data.get("mdn_sign") and not cleaned_data.get("signature_certs"):
             raise forms.ValidationError(
                 _("Signature Key is mandatory when signed mdn is requested")
             )
@@ -85,7 +77,7 @@ class PrivateKeyForm(forms.ModelForm):
         ext = os.path.splitext(key_file.name)[1]
         valid_extensions = [".pem", ".p12", ".pfx"]
 
-        if not ext.lower() in valid_extensions:
+        if ext.lower() not in valid_extensions:
             raise forms.ValidationError(
                 _("Unsupported key format, supported formats " "include %s.")
                 % ", ".join(valid_extensions)
@@ -141,7 +133,7 @@ class PublicCertificateForm(forms.ModelForm):
         ext = os.path.splitext(cert_file.name)[1]
         valid_extensions = [".pem", ".der", ".cer"]
 
-        if not ext.lower() in valid_extensions:
+        if ext.lower() not in valid_extensions:
             raise forms.ValidationError(
                 _("Unsupported certificate format, supported formats " "include %s.")
                 % ", ".join(valid_extensions)
@@ -157,7 +149,7 @@ class PublicCertificateForm(forms.ModelForm):
             ext = os.path.splitext(cert_ca_file.name)[1]
             valid_extensions = [".pem", ".der", ".cer", ".ca"]
 
-            if not ext.lower() in valid_extensions:
+            if ext.lower() not in valid_extensions:
                 raise forms.ValidationError(
                     _(
                         "Unsupported certificate format, supported formats "
@@ -209,7 +201,7 @@ class PublicCertificateForm(forms.ModelForm):
         """Define additional config for the PublicCertificateForm class."""
 
         model = PublicCertificate
-        fields = ["cert_file", "cert_ca_file", "verify_cert"]
+        fields = ["cert_file", "cert_ca_file", "verify_cert", "activated_from", "activated_to"]
 
 
 class SendAs2MessageForm(forms.Form):

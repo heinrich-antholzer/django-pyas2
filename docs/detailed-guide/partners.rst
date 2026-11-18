@@ -47,19 +47,21 @@ Field Name                                Description                           
                                           compression.
 ``Encrypt Message``                       Select the algorithm to be used for encrypting  No
                                           messages, defaults to None.
-``Encryption Key``                        Select the ``Public Key`` used for encrypting   No
+``Encryption Certificates``               Select the ``Public Keys`` used for encrypting  No
                                           the outbound messages to this partner.
-``Encryption Certificate Rollover List``  Additional ``Public Keys`` of this partner      No
-                                          used for encrypting outbound messages, see
-                                          :ref:`certificate-rollover`.
+                                          See :ref:`Certificate Rollover` for more
+                                          information about the Priority of
+                                          Certificates.
 ``Sign Message``                          Select the hash algorithm to be used for        No
                                           signing messages, defaults to None. incoming
                                           messages from trading partners.
-``Signature key``                         The ``Public Key`` used to verify inbound       No
-                                          signed messages and MDNs from this partner
-``Signature Certificate Rollover List``   Additional ``Public Keys`` of this partner      No
-                                          used for verifying inbound messages and MDNs,
-                                          see :ref:`certificate-rollover`.
+``Signature Certificates``                Select the ``Public Keys`` used to verify       No
+                                          inbound signed messages and MDNs from this
+                                          partner used for verifying inbound messages
+                                          and MDNs.
+                                          See :ref:`Certificate Rollover` for more
+                                          information about the Priority of
+                                          Certificates.
 ========================================  ==============================================  =========
 
 Either the certificate field or its rollover list must be set when message encryption

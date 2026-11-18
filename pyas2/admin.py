@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from django.contrib import admin
@@ -41,7 +40,7 @@ class PublicCertificateAdmin(admin.ModelAdmin):
     """Admin class for the PublicCertificate model."""
 
     form = PublicCertificateForm
-    list_display = ("name", "valid_from", "valid_to", "serial_number", "download_cert")
+    list_display = ("name", "valid_from", "activated_from", "valid_to", "activated_to", "serial_number", "download_cert")
 
     @staticmethod
     def download_cert(obj):
@@ -72,7 +71,7 @@ class PartnerAdmin(admin.ModelAdmin):
         "mdn_mode",
     ]
     list_filter = ("name", "as2_name")
-    filter_horizontal = ("encryption_cert_rollover", "signature_cert_rollover")
+    filter_horizontal = ("encryption_certs", "signature_certs")
     fieldsets = (
         (
             None,
@@ -107,11 +106,9 @@ class PartnerAdmin(admin.ModelAdmin):
                 "fields": (
                     "compress",
                     "encryption",
-                    "encryption_cert",
-                    "encryption_cert_rollover",
+                    "encryption_certs",
                     "signature",
-                    "signature_cert",
-                    "signature_cert_rollover",
+                    "signature_certs",
                 ),
             },
         ),

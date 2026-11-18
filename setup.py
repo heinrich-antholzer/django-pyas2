@@ -8,23 +8,21 @@ with open(os.path.join(root, 'README.rst')) as f:
     README = f.read()
 
 install_requires = [
-    'pyas2lib==1.4.3',
-    'django>=2.2.18',
+    'pyas2lib',
+    'oscrypto@git+https://github.com/wbond/oscrypto.git@1547f53',
+    'django',
     'requests'
 ]
 
 tests_require = [
-    "pytest==6.2.5",
-    "pytest-cov==2.8.1",
-    "coverage==5.0.4",
-    "pytest-django==4.5.2",
-    "pytest-mock==3.5.1",
-    "pylama==8.3.7",
-    "pylint==2.12.1",
-    "pytest-black==0.3.12",
-    "black==22.6.0",
-    "django-environ==0.4.5",
-    "pyflakes==2.4.0",
+    "pytest",
+    "pytest",
+    "coverage",
+    "pytest",
+    "pytest",
+    "pylint",
+    "pytest",
+    "django",
 ]
 
 

@@ -63,10 +63,13 @@ Public Certificates
 ``Public Certificates`` are used for verifying signatures of inbound messages and encrypting outbound messages to your partners. The public key file will be shared by your partner. We can manage them in ``django-pyas2`` from the Django Admin. The admin screen lists all your public certificates and lets you add new ones. Each ``Public Certificate`` is characterized by the following fields:
 
 ==========================  ==========================================  =========
-Field Name                                          Description                                 Mandatory
+Field Name                  Description                                 Mandatory
 ==========================  ==========================================  =========
-``Certificate File``        Select the **PEM** or **DER** encoded       Yes
-                            [#f1]_ public key file.
+``Certificate Files``       Select the **PEM** or **DER** encoded       Yes
+                            [#f1]_ public key files.
+                            See :ref:`Certificate Rollover` for more
+                            information about the Priority of
+                            Certificates.
 ``Certificate CA Store``    In case the certificate has been signed by  No
                             an unknown CA then select the CA
                             certificate here.

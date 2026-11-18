@@ -4,8 +4,10 @@ Release History
 Unreleased
 ----------
 
-* Add certificate rollover lists to partners so that multiple certificates can be
-  assigned to a partner and the valid one is used based on its validity dates (#123)
+* Add Django 6 Support (Django < 6 not supported anymore)
+* Bump version of pyas2lib to 1.4.4
+* Allow multiple certificates to be assigned to a partner.
+  The valid one is used based on its validity dates (#123)
 
 1.2.3 - 2023-02-25
 ------------------

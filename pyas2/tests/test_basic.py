@@ -50,15 +50,15 @@ class BasicServerClientTestCase(TestCase):
             encryption_key=cls.server_key,
             signature_key=cls.server_key,
         )
-        Partner.objects.create(
+        partner = Partner.objects.create(
             name="AS2 Client",
             as2_name="as2client",
             target_url="http://localhost:8080/pyas2/as2receive",
             compress=False,
             mdn=False,
-            signature_cert=cls.client_crt,
-            encryption_cert=cls.client_crt,
         )
+        partner.signature_certs.add(cls.client_crt)
+        partner.encryption_certs.add(cls.client_crt)
 
         # Setup the client organization and partner
         cls.organization = Organization.objects.create(
@@ -157,9 +157,10 @@ class BasicServerClientTestCase(TestCase):
             target_url="http://localhost:8080/pyas2/as2receive",
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
-            signature_cert=self.server_crt,
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -186,8 +187,9 @@ class BasicServerClientTestCase(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
         )
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -212,10 +214,11 @@ class BasicServerClientTestCase(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
         )
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -241,12 +244,13 @@ class BasicServerClientTestCase(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
-            signature_cert=self.server_crt,
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -272,9 +276,10 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -298,11 +303,12 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             mdn=True,
             mdn_mode="SYNC",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -327,12 +333,13 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -358,11 +365,12 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -387,13 +395,14 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -419,14 +428,15 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -454,14 +464,15 @@ class BasicServerClientTestCase(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             compress=True,
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully
@@ -490,14 +501,15 @@ class BasicServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
             mdn=True,
             mdn_mode="ASYNC",
-            mdn_sign="sha1",
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         # Check if message was processed successfully

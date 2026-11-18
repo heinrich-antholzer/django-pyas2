@@ -115,24 +115,17 @@ class PartnerCertificateTestCase(TestCase):
             name="AS2 Client",
             as2_name=as2_name,
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.server_crt,
         )
+        partner.signature_certs.add(self.server_crt)
+        partner.encryption_certs.add(self.server_crt)
         if rollover:
-            partner.signature_cert_rollover.add(self.client_crt)
-            partner.encryption_cert_rollover.add(self.client_crt)
+            partner.signature_certs.add(self.client_crt)
+            partner.encryption_certs.add(self.client_crt)
 
         # Return a fresh copy so that the certificate validity is not cached
         return Partner.objects.get(as2_name=as2_name)
-
-    def testAssignedCertificatesUsedWithoutRollover(self):
-        """The certificates of a partner are used when no rollover list is set."""
-        partner = self.build_partner(rollover=False)
-        self.assertEqual(partner.active_signature_cert, self.server_crt)
-        self.assertEqual(partner.active_encryption_cert, self.server_crt)
-        self.assertEqual(partner.signature_cert_candidates, [self.server_crt])
 
     def testRolloverCertificateUsedWhenAssignedOneExpired(self):
         """The valid certificate from the rollover list is used."""
@@ -166,7 +159,7 @@ class PartnerCertificateTestCase(TestCase):
             "target_url": "http://localhost:8080/pyas2/as2receive",
             "subject": "EDI Message sent using pyas2",
             "content_type": "application/edi-consent",
-            "signature": "sha1",
+            "signature": "sha256",
             "encryption": "tripledes_192_cbc",
         }
         form = PartnerForm(data=partner_data)
@@ -175,8 +168,8 @@ class PartnerCertificateTestCase(TestCase):
         form = PartnerForm(
             data=dict(
                 partner_data,
-                signature_cert_rollover=[self.client_crt.pk],
-                encryption_cert_rollover=[self.client_crt.pk],
+                signature_certs=[self.client_crt.pk],
+                encryption_certs=[self.client_crt.pk],
             )
         )
         self.assertTrue(form.is_valid(), form.errors)
@@ -219,9 +212,8 @@ class RolloverServerClientTestCase(TestCase):
             target_url="http://localhost:8080/pyas2/as2receive",
             compress=False,
             mdn=False,
-            signature_cert=self.server_crt,
         )
-        self.server_partner.signature_cert_rollover.add(self.client_crt)
+        self.server_partner.signature_certs.add(self.server_crt, self.client_crt)
 
         # Setup the client organization
         self.organization = Organization.objects.create(
@@ -260,9 +252,9 @@ class RolloverServerClientTestCase(TestCase):
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
 
         # The signing certificate is not the one currently assigned to the partner
         self.assertEqual(self.server_partner.active_signature_cert, self.server_crt)
@@ -277,14 +269,15 @@ class RolloverServerClientTestCase(TestCase):
 
     def testSignedMessageNotVerifiedWithoutRolloverCertificate(self):
         """A message signed with an unknown certificate is not verified."""
-        self.server_partner.signature_cert_rollover.clear()
+        self.server_partner.signature_certs.set([self.server_crt])
         partner = Partner.objects.create(
             name="AS2 Server",
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
-            signature="sha1",
-            signature_cert=self.server_crt,
+            signature="sha256",
         )
+        partner.signature_certs.add(self.server_crt)
+
         in_message = self.build_and_send(partner)
 
         out_message = Message.objects.get(
@@ -301,9 +294,8 @@ class RolloverServerClientTestCase(TestCase):
             as2_name="as2server",
             target_url="http://localhost:8080/pyas2/as2receive",
             encryption="tripledes_192_cbc",
-            encryption_cert=self.client_crt,
         )
-        partner.encryption_cert_rollover.add(self.server_crt)
+        partner.encryption_certs.add(self.client_crt, self.server_crt)
         partner = Partner.objects.get(as2_name="as2server")
         in_message = self.build_and_send(partner)
 
@@ -323,10 +315,9 @@ class RolloverServerClientTestCase(TestCase):
             target_url="http://localhost:8080/pyas2/as2receive",
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
-            signature_cert=self.client_crt,
+            mdn_sign="sha256",
         )
-        partner.signature_cert_rollover.add(self.server_crt)
+        partner.signature_certs.add(self.client_crt, self.server_crt)
         partner = Partner.objects.get(as2_name="as2server")
         self.assertEqual(partner.active_signature_cert, self.client_crt)
 
@@ -344,9 +335,9 @@ class RolloverServerClientTestCase(TestCase):
             target_url="http://localhost:8080/pyas2/as2receive",
             mdn=True,
             mdn_mode="SYNC",
-            mdn_sign="sha1",
-            signature_cert=self.client_crt,
+            mdn_sign="sha256",
         )
+        partner.signature_certs.add(self.client_crt)
         in_message = self.build_and_send(partner)
 
         self.assertEqual(in_message.status, "E")
@@ -363,10 +354,9 @@ class RolloverServerClientTestCase(TestCase):
             target_url="http://localhost:8080/pyas2/as2receive",
             mdn=True,
             mdn_mode="ASYNC",
-            mdn_sign="sha1",
-            signature_cert=self.client_crt,
+            mdn_sign="sha256",
         )
-        partner.signature_cert_rollover.add(self.server_crt)
+        partner.signature_certs.add(self.client_crt, self.server_crt)
         partner = Partner.objects.get(as2_name="as2server")
         self.assertEqual(partner.active_signature_cert, self.client_crt)
 

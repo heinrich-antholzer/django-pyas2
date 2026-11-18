@@ -68,10 +68,10 @@ def order_certificates(certificates, at_time=None):
     invalid = [cert for cert in unique if not cert.is_valid(at_time)]
 
     valid.sort(
-        key=lambda cert: (cert.valid_from is not None, cert.valid_from), reverse=True
+        key=lambda cert: (cert.activated_from is not None, cert.activated_from, cert.valid_from is not None, cert.valid_from), reverse=True
     )
     invalid.sort(
-        key=lambda cert: (cert.valid_to is not None, cert.valid_to), reverse=True
+        key=lambda cert: (cert.activated_to is not None, cert.activated_to, cert.valid_to is not None, cert.valid_to), reverse=True
     )
 
     return valid + invalid
@@ -96,6 +96,8 @@ class PublicCertificate(models.Model):
         default=True,
         help_text=_("Uncheck this option to disable certificate verification."),
     )
+    activated_from = models.DateTimeField(null=True, blank=True, help_text=_("Do not use this certificate before this Date, even if the Certificate is already valid."))
+    activated_to = models.DateTimeField(null=True, blank=True, help_text=_("Do not use this certificate after this Date, even if the Certificate is still valid."))
     valid_from = models.DateTimeField(null=True, blank=True)
     valid_to = models.DateTimeField(null=True, blank=True)
     serial_number = models.CharField(max_length=64, null=True, blank=True)
@@ -111,10 +113,19 @@ class PublicCertificate(models.Model):
     def is_valid(self, at_time=None):
         """Check if the certificate is within its validity period at ``at_time``."""
         at_time = at_time or timezone.now()
+
+        # check custom activation range
+        if self.activated_from and at_time < self.activated_from:
+            return False
+        if self.activated_to and at_time > self.activated_to:
+            return False
+
+        # check certificate validity range
         if self.valid_from and at_time < self.valid_from:
             return False
         if self.valid_to and at_time > self.valid_to:
             return False
+
         return True
 
     def __str__(self):
@@ -242,16 +253,13 @@ class Partner(models.Model):
         null=True,
         blank=True,
     )
-    encryption_cert = models.ForeignKey(
-        PublicCertificate, null=True, blank=True, on_delete=models.SET_NULL
-    )
-    encryption_cert_rollover = models.ManyToManyField(
+    encryption_certs = models.ManyToManyField(
         PublicCertificate,
-        related_name="partner_e_rollover",
+        related_name="partner_encryption",
         blank=True,
-        verbose_name=_("Encryption Certificate Rollover List"),
+        verbose_name=_("Encryption Certificates"),
         help_text=_(
-            "Additional encryption certificates for this partner, the one that is "
+            "Encryption certificates for this partner, the one that is "
             "currently valid is used for encrypting outbound messages."
         ),
     )
@@ -262,16 +270,9 @@ class Partner(models.Model):
         null=True,
         blank=True,
     )
-    signature_cert = models.ForeignKey(
+    signature_certs = models.ManyToManyField(
         PublicCertificate,
-        related_name="partner_s",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-    )
-    signature_cert_rollover = models.ManyToManyField(
-        PublicCertificate,
-        related_name="partner_s_rollover",
+        related_name="partner_signature",
         blank=True,
         verbose_name=_("Signature Certificate Rollover List"),
         help_text=_(
@@ -334,16 +335,12 @@ class Partner(models.Model):
     @property
     def encryption_cert_candidates(self):
         """Return the encryption certificates of this partner, preferred one first."""
-        return order_certificates(
-            [self.encryption_cert, *self.encryption_cert_rollover.all()]
-        )
+        return order_certificates(self.encryption_certs.all())
 
     @property
     def signature_cert_candidates(self):
         """Return the signature certificates of this partner, preferred one first."""
-        return order_certificates(
-            [self.signature_cert, *self.signature_cert_rollover.all()]
-        )
+        return order_certificates(self.signature_certs.all())
 
     @property
     def active_encryption_cert(self):

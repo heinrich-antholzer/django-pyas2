@@ -6,12 +6,14 @@ on:
   pull_request:
     branches:
       - "master"
+env:
+  OPENSSL_ENABLE_SHA1_SIGNATURES: 1
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10"]
+        python-version: ["3.14"]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
